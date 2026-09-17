@@ -28,6 +28,7 @@ void twf_free(TWFNode *trie);
 TWFNode *twf_clone(const TWFNode *trie);
 bool twf_equal(const TWFNode *a, const TWFNode *b);
 TWFNode *twf_create(const TWFWord *words, size_t count);
+TWFNode *twf_create_from_arrays(const char *const *const *tokens, const size_t *lengths, size_t count);
 bool twf_insert(TWFNode *trie, const char *const *word, size_t length,
                 double value, double bottom_value);
 TWFNode *twf_merge(const TWFNode *a, const TWFNode *b);

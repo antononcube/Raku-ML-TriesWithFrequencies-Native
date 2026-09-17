@@ -131,6 +131,24 @@ TWFNode *twf_create(const TWFWord *words, size_t count) {
   return r;
 }
 
+TWFNode *twf_create_from_arrays(const char *const *const *tokens, const size_t *lengths, size_t count) {
+  TWFWord *words;
+  TWFNode *result;
+  size_t i;
+  if (!tokens || !lengths || !count)
+    return NULL;
+  words = malloc(count * sizeof(*words));
+  if (!words)
+    return NULL;
+  for (i = 0; i < count; ++i) {
+    words[i].tokens = tokens[i];
+    words[i].length = lengths[i];
+  }
+  result = twf_create(words, count);
+  free(words);
+  return result;
+}
+
 static TWFNode *merge_node(const TWFNode *a, const TWFNode *b) {
   TWFNode *r, *q;
   const TWFNode *p;

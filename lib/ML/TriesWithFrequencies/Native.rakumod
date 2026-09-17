@@ -13,7 +13,9 @@ class NativeTrieNode is repr('CStruct') is export {
     has Pointer[NativeTrieNode] $.next     is rw;
 }
 
+
 sub c-new(Str, num64 --> NativeTrieNode) is native($library) is symbol('twf_new') { * }
+sub c-create(CArray[Pointer], CArray[size_t], size_t --> NativeTrieNode) is native($library) is symbol('twf_create_from_arrays') { * }
 sub c-free(NativeTrieNode) is native($library) is symbol('twf_free') { * }
 sub c-clone(NativeTrieNode --> NativeTrieNode) is native($library) is symbol('twf_clone') { * }
 sub c-equal(NativeTrieNode, NativeTrieNode --> uint8) is native($library) is symbol('twf_equal') { * }
@@ -45,13 +47,17 @@ sub native-trie-free(NativeTrieNode:D $trie) is export { c-free($trie) }
 sub native-trie-clone(NativeTrieNode:D $trie --> NativeTrieNode) is export { c-clone($trie) }
 sub native-trie-equal(NativeTrieNode:D $a, NativeTrieNode:D $b --> Bool) is export { so c-equal($a, $b) }
 sub native-trie-create(@words --> NativeTrieNode) is export {
-    my $trie = native-trie-new();
     die 'Every word must be Positional.' unless @words.all ~~ Positional;
-    for @words -> $word {
-        next unless $word.elems;
-        die 'Could not insert word.' unless native-trie-insert($trie, $word);
+    my $token-pointers = CArray[Pointer].new;
+    my $lengths = CArray[size_t].new;
+    my @token-arrays;
+    for @words.kv -> $i, $word {
+        my $tokens = word-array($word);
+        @token-arrays.push: $tokens;
+        $token-pointers[$i] = nativecast(Pointer, $tokens);
+        $lengths[$i] = $word.elems;
     }
-    $trie
+    c-create($token-pointers, $lengths, @words.elems)
 }
 sub native-trie-create-by-split(@words, Str() :$separator = '' --> NativeTrieNode) is export {
     my @tokenized = @words.map({ $separator.chars ?? .split($separator).Array !! .comb.Array });

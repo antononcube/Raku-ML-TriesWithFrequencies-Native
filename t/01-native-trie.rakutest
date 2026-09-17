@@ -3,6 +3,10 @@ use Test;
 
 use ML::TriesWithFrequencies::Native;
 
+my $direct-trie = native-trie-create([<a b>.Array, <a c>.Array]);
+is native-trie-to-map($direct-trie)<TRIEROOT><TRIEVALUE>, 2e0, 'native-trie-create uses C word records';
+native-trie-free($direct-trie);
+
 my $trie = native-trie-create-by-split(<bar bark bars balm cert cell>);
 my %map = native-trie-to-map($trie);
 is %map<TRIEROOT><TRIEVALUE>, 6e0, 'root frequency';
