@@ -30,6 +30,8 @@ sub c-shrink(NativeTrieNode, Str, num64, uint8 --> NativeTrieNode) is native($li
 sub c-threshold(NativeTrieNode, num64, uint8, Str --> NativeTrieNode) is native($library) is symbol('twf_remove_by_threshold') { * }
 sub c-pareto(NativeTrieNode, num64, uint8, Str --> NativeTrieNode) is native($library) is symbol('twf_remove_by_pareto_fraction') { * }
 sub c-node-counts(NativeTrieNode, size_t is rw, size_t is rw, size_t is rw) is native($library) is symbol('twf_node_counts') { * }
+sub c-random-choice(NativeTrieNode, uint8, uint32 is rw, CArray[Str] is rw, size_t is rw --> int32) is native($library) is symbol('twf_random_choice') { * }
+sub c-free-choice(CArray[Str]) is native($library) is symbol('twf_free_choice') { * }
 
 sub word-array(Positional:D $word --> CArray[Str]) {
     my $result = CArray[Str].new;
@@ -78,6 +80,22 @@ sub native-trie-counts(NativeTrieNode:D $trie --> Hash) is export {
 }
 sub native-trie-node-counts(NativeTrieNode:D $trie --> Hash) is export {
     native-trie-counts($trie)
+}
+
+sub native-trie-random-choice(NativeTrieNode:D $trie, Int() $count = 1,
+                              Bool :$weighted = True, Int :$seed --> List) is export {
+    die 'Count must be non-negative' if $count < 0;
+    my uint32 $state = ($seed // (1 +^ 31)).UInt;
+    my @choices;
+    for ^$count {
+        my CArray[Str] $tokens .= new;
+        my size_t $length = 0;
+        die 'Could not choose a word from native trie'
+            if c-random-choice($trie, $weighted.Int, $state, $tokens, $length) != 0;
+        @choices.push: (0 ..^ $length).map({ $tokens[$_] }).List;
+        c-free-choice($tokens);
+    }
+    @choices.List
 }
 
 sub node-to-map(NativeTrieNode:D $node --> Hash) {

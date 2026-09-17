@@ -19,6 +19,9 @@ is-approx %pmap<TRIEROOT><b><TRIEVALUE>, 4 / 6, 'probabilities normalize childre
 my $shrunk = native-trie-shrink($probabilities);
 ok native-trie-to-map-format($shrunk)<TRIEROOT><ba>:exists, 'map-format alias works';
 is-deeply native-trie-counts($trie), { total => 14, internal => 9, leaves => 5 }, 'reports total, internal, and leaf nodes';
+my @choices = native-trie-random-choice($trie, 3, :seed(42));
+is @choices.elems, 3, 'returns the requested number of random paths';
+ok @choices.all ~~ Positional, 'each random choice is a token list';
 native-trie-free($shrunk);
 native-trie-free($probabilities);
 native-trie-free($trie);
