@@ -17,3 +17,22 @@ For visualization purposes the native tries are converted to "ML::TriesWithFrequ
 
 So, implement, in Raku, the sub `native-trie-to-map` that converts the native Trie structure to a Raku hashmap. 
 ``` 
+
+```text
+Ok. Add / implement the sub `native-trie-count`s. 
+That uses `sub c-node-counts(NativeTrieNode, size_t, size_t, size_t) is native($library) is symbol('twf_node_counts') { * }￼` or similar.
+```
+
+```text
+Implement native-trie-random-choice -- it looks like you missed it.
+```
+
+```text
+Something is wrong. If I use he command `my @randomWords = native-trie-random-choice($ptr, 20);` &#x20;
+I get \`[((Str) (Str) (Str) (Str)) ((Str) (Str) (Str) (Str)) ...\`
+```
+
+```text
+Re-implement `native-trie-create` to use the C `twf_create`. 
+So, `word-array` is called on all words and then they are handed to `twf_create`.
+```
