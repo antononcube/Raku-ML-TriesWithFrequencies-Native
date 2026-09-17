@@ -221,22 +221,13 @@ native-trie-to-map-format($tr);
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
 [GitHub Markdown](https://github.com/antononcube/MathematicaForPrediction).
 
-[JW1] Jonathan Worthington,
-["The new MoarVM dispatch mechanism is here!"](https://6guts.wordpress.com/2021/09/29/the-new-moarvm-dispatch-mechanism-is-here/),
-(2021),
-[6guts at WordPress](https://6guts.wordpress.com).
-
-[RAC1] Tib,
-["Day 10: My 10 commandments for Raku performances"](https://raku-advent.blog/2020/12/10/day-10-my-10-commandments-for-raku-performances/),
-(2020),
-[Raku Advent Calendar](https://raku-advent.blog).
 
 [WK1] Wikipedia entry, [Trie](https://en.wikipedia.org/wiki/Trie).
 
 ### Packages
 
 [AAp1] Anton Antonov,
-[ML::TriesWithFrequencies, C package](https://github.com/antononcube/Raku-ML-TriesWithFrequencies),
+[ML::TriesWithFrequencies, Raku package](https://github.com/antononcube/Raku-ML-TriesWithFrequencies),
 (2021-2024),
 [GitHub/antononcube](https://github.com/antononcube).
 
