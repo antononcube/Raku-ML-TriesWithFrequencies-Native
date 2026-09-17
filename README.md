@@ -192,6 +192,13 @@ native-trie-to-map-format($tr);
 # {TRIEROOT => {TRIEVALUE => 2, cor => {TRIEVALUE => 2, e => {TRIEVALUE => 1}, t => {TRIEVALUE => 1}}}}
 ```
 
+------
+
+## Performance 
+
+This package "ML::TriesWithFrequencies::Native" is approximately 10÷15 times faster than "ML::TriesWithFrequencies"
+on "larger" lists of words. 
+See the benchmark file ["Native-Trie-creation-profiling.raku"](./examples/Native-Trie-creation-profiling.raku).
 
 ------
 
@@ -220,7 +227,6 @@ native-trie-to-map-format($tr);
 (2017),
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
 [GitHub Markdown](https://github.com/antononcube/MathematicaForPrediction).
-
 
 [WK1] Wikipedia entry, [Trie](https://en.wikipedia.org/wiki/Trie).
 

@@ -109,6 +109,13 @@ my $tr = native-trie-shrink(native-trie-create-by-split(<core cort>));
 native-trie-to-map-format($tr);
 ```
 
+------
+
+## Performance 
+
+This package "ML::TriesWithFrequencies::Native" is approximately 10÷15 times faster than "ML::TriesWithFrequencies"
+on "larger" lists of words. 
+See the benchmark file ["Native-Trie-creation-profiling.raku"](./examples/Native-Trie-creation-profiling.raku).
 
 ------
 
