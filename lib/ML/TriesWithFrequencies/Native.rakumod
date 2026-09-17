@@ -46,10 +46,10 @@ sub native-trie-clone(NativeTrieNode:D $trie --> NativeTrieNode) is export { c-c
 sub native-trie-equal(NativeTrieNode:D $a, NativeTrieNode:D $b --> Bool) is export { so c-equal($a, $b) }
 sub native-trie-create(@words --> NativeTrieNode) is export {
     my $trie = native-trie-new();
+    die 'Every word must be Positional.' unless @words.all ~~ Positional;
     for @words -> $word {
-        die 'Every word must be Positional' unless $word ~~ Positional;
         next unless $word.elems;
-        die 'Could not insert word' unless native-trie-insert($trie, $word);
+        die 'Could not insert word.' unless native-trie-insert($trie, $word);
     }
     $trie
 }
@@ -85,14 +85,16 @@ sub native-trie-node-counts(NativeTrieNode:D $trie --> Hash) is export {
 
 sub native-trie-random-choice(NativeTrieNode:D $trie, Int() $count = 1,
                               Bool :$weighted = True, Int :$seed --> List) is export {
-    die 'Count must be non-negative' if $count < 0;
+    die 'Count must be non-negative.' if $count < 0;
     my uint32 $state = ($seed // (1 +^ 31)).UInt;
     my @choices;
     for ^$count {
         my Pointer $tokens .= new;
         my size_t $length = 0;
-        die 'Could not choose a word from native trie'
-            if c-random-choice($trie, $weighted.Int, $state, $tokens, $length) != 0;
+
+        die 'Could not choose a word from native trie.'
+        if c-random-choice($trie, $weighted.Int, $state, $tokens, $length) != 0;
+
         my @choice = (^$length).map({ c-choice-token($tokens, $_).Str });
         @choices.push: @choice.Array;
         c-free-choice($tokens);
