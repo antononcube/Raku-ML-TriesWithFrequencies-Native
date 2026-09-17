@@ -17,7 +17,7 @@
     "test-depends": [],
     "provides": {
         "ML::TriesWithFrequencies::Native": "lib/ML/TriesWithFrequencies/Native.rakumod",
-        "ML::TriesWithFrequencies::Native::CustomerBuilder": "lib/ML/TriesWithFrequencies/Native/CustomerBuilder.rakumod"
+        "ML::TriesWithFrequencies::Native::CustomBuilder": "lib/ML/TriesWithFrequencies/Native/CustomBuilder.rakumod"
     },
     "resources": [
         "libraries/TriesWithFrequencies"

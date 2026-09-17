@@ -4,4 +4,8 @@
 # precompiled files
 .precomp
 lib/.precomp
+.so
+.iml
+.idea
+.log
 

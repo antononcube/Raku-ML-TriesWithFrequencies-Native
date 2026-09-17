@@ -1,0 +1,24 @@
+use v6.d;
+use Test;
+use lib 'lib';
+use ML::TriesWithFrequencies::Native;
+
+my $trie = native-trie-create-by-split(<bar bark bars balm cert cell>);
+my %map = native-trie-to-map($trie);
+is %map<TRIEROOT><TRIEVALUE>, 6e0, 'root frequency';
+is %map<TRIEROOT><b><TRIEVALUE>, 4e0, 'cumulative prefix frequency';
+is %map<TRIEROOT><b><a><r><k><TRIEVALUE>, 1e0, 'leaf frequency';
+ok native-trie-contains($trie, 'bar'.comb), 'contains terminal word';
+ok !native-trie-contains($trie, 'ba'.comb), 'does not contain nonterminal prefix';
+is native-trie-position($trie, 'barky'.comb), 4, 'position stops at missing token';
+my $subtrie = native-trie-retrieve($trie, 'bar'.comb);
+is $subtrie.key, 'r', 'retrieve returns final node';
+my $probabilities = native-trie-node-probabilities($trie);
+my %pmap = native-trie-to-map($probabilities);
+is-approx %pmap<TRIEROOT><b><TRIEVALUE>, 4 / 6, 'probabilities normalize children';
+my $shrunk = native-trie-shrink($probabilities);
+ok native-trie-to-map-format($shrunk)<TRIEROOT><ba>:exists, 'map-format alias works';
+native-trie-free($shrunk);
+native-trie-free($probabilities);
+native-trie-free($trie);
+done-testing;
