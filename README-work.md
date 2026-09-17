@@ -1,5 +1,10 @@
 # ML::TriesWithFrequencies::Native
 
+[![Actions Status](https://github.com/antononcube/Raku-ML-TriesWithFrequencies-Native/actions/workflows/linux.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies-Native/actions)
+[![Actions Status](https://github.com/antononcube/Raku-ML-TriesWithFrequencies-Native/actions/workflows/macos.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies-Native/actions)
+
+[![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
+
 This Raku package has C-implementations of functions for creation and manipulation of
 [Tries (Prefix trees)](https://en.wikipedia.org/wiki/Trie)
 with frequencies.
