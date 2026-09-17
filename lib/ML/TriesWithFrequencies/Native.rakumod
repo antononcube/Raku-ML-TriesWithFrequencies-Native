@@ -103,14 +103,32 @@ sub native-trie-merge(NativeTrieNode:D $a, NativeTrieNode:D $b --> NativeTrieNod
 
 #| Retrieve a subtrie with a word-list.
 sub native-trie-retrieve(NativeTrieNode:D $trie, Positional:D $word --> NativeTrieNode) is export { my $a = word-array($word); c-retrieve($trie, $a, $word.elems) }
+
+#| Find the position of a given word (or part of it) in the trie.
 sub native-trie-position(NativeTrieNode:D $trie, Positional:D $word --> Int) is export { my $a = word-array($word); c-position($trie, $a, $word.elems).Int }
+
+#| Does the trie object tr has a word as key.
 sub native-trie-is-key(NativeTrieNode:D $trie, Positional:D $word --> Bool) is export { $word.elems && so c-is-key($trie, word-array($word), $word.elems) }
+
+#| Does the trie object contain a word.
 sub native-trie-contains(NativeTrieNode:D $trie, Positional:D $word --> Bool) is export { $word.elems && so c-contains($trie, word-array($word), $word.elems) }
+
+#| For a given trie find if the retrievable part of a word is complete match.
 sub native-trie-has-complete-match(NativeTrieNode:D $trie, Positional:D $word --> Bool) is export { so c-complete($trie, word-array($word), $word.elems) }
+
+#| Convert the counts (frequencies) at the nodes into node probabilities.
 sub native-trie-node-probabilities(NativeTrieNode:D $trie --> NativeTrieNode) is export { c-probabilities($trie) }
+
+#| Prune a trie by specified max-level.
 sub native-trie-prune(NativeTrieNode:D $trie, Int() $max-level --> NativeTrieNode) is export { c-prune($trie, $max-level) }
+
+#| Shrink a trie by finding prefixes.
 sub native-trie-shrink(NativeTrieNode:D $trie, Str() :$delimiter = '', Real() :$threshold = -1, Bool :$internal-only = False --> NativeTrieNode) is export { c-shrink($trie, $delimiter, $threshold.Num, $internal-only.Int) }
+
+#| Remove nodes by threshold.
 sub native-trie-remove-by-threshold(NativeTrieNode:D $trie, Real() $threshold, Bool :$keep-at-or-above = True, Str :$replacement-key = Str --> NativeTrieNode) is export { c-threshold($trie, $threshold.Num, $keep-at-or-above.Int, $replacement-key) }
+
+#| Remove nodes by Pareto fraction.
 sub native-trie-remove-by-pareto-fraction(NativeTrieNode:D $trie, Real() $fraction, Bool :$keep-top = True, Str :$replacement-key = Str --> NativeTrieNode) is export { c-pareto($trie, $fraction.Num, $keep-top.Int, $replacement-key) }
 
 #| Native trie statistics.
@@ -144,6 +162,10 @@ sub native-trie-random-choice(NativeTrieNode:D $trie, Int() $count = 1,
     }
     @choices.List
 }
+
+#==========================================================
+# Representation
+#==========================================================
 
 sub node-to-map(NativeTrieNode:D $node --> Hash) {
     my %node = TRIEVALUE => $node.value;
