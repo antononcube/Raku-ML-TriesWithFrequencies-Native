@@ -1,6 +1,6 @@
 use v6.d;
 use Test;
-use lib 'lib';
+
 use ML::TriesWithFrequencies::Native;
 
 my $trie = native-trie-create-by-split(<bar bark bars balm cert cell>);
