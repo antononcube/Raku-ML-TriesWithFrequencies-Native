@@ -18,6 +18,7 @@ my %pmap = native-trie-to-map($probabilities);
 is-approx %pmap<TRIEROOT><b><TRIEVALUE>, 4 / 6, 'probabilities normalize children';
 my $shrunk = native-trie-shrink($probabilities);
 ok native-trie-to-map-format($shrunk)<TRIEROOT><ba>:exists, 'map-format alias works';
+is-deeply native-trie-counts($trie), { total => 14, internal => 9, leaves => 5 }, 'reports total, internal, and leaf nodes';
 native-trie-free($shrunk);
 native-trie-free($probabilities);
 native-trie-free($trie);

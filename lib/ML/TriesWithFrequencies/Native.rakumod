@@ -29,6 +29,7 @@ sub c-prune(NativeTrieNode, int32 --> NativeTrieNode) is native($library) is sym
 sub c-shrink(NativeTrieNode, Str, num64, uint8 --> NativeTrieNode) is native($library) is symbol('twf_shrink') { * }
 sub c-threshold(NativeTrieNode, num64, uint8, Str --> NativeTrieNode) is native($library) is symbol('twf_remove_by_threshold') { * }
 sub c-pareto(NativeTrieNode, num64, uint8, Str --> NativeTrieNode) is native($library) is symbol('twf_remove_by_pareto_fraction') { * }
+sub c-node-counts(NativeTrieNode, size_t is rw, size_t is rw, size_t is rw) is native($library) is symbol('twf_node_counts') { * }
 
 sub word-array(Positional:D $word --> CArray[Str]) {
     my $result = CArray[Str].new;
@@ -69,6 +70,15 @@ sub native-trie-prune(NativeTrieNode:D $trie, Int() $max-level --> NativeTrieNod
 sub native-trie-shrink(NativeTrieNode:D $trie, Str() :$delimiter = '', Real() :$threshold = -1, Bool :$internal-only = False --> NativeTrieNode) is export { c-shrink($trie, $delimiter, $threshold.Num, $internal-only.Int) }
 sub native-trie-remove-by-threshold(NativeTrieNode:D $trie, Real() $threshold, Bool :$keep-at-or-above = True, Str :$replacement-key = Str --> NativeTrieNode) is export { c-threshold($trie, $threshold.Num, $keep-at-or-above.Int, $replacement-key) }
 sub native-trie-remove-by-pareto-fraction(NativeTrieNode:D $trie, Real() $fraction, Bool :$keep-top = True, Str :$replacement-key = Str --> NativeTrieNode) is export { c-pareto($trie, $fraction.Num, $keep-top.Int, $replacement-key) }
+
+sub native-trie-counts(NativeTrieNode:D $trie --> Hash) is export {
+    my size_t ($total, $internal, $leaves) = 0, 0, 0;
+    c-node-counts($trie, $total, $internal, $leaves);
+    { total => $total.Int, internal => $internal.Int, leaves => $leaves.Int }
+}
+sub native-trie-node-counts(NativeTrieNode:D $trie --> Hash) is export {
+    native-trie-counts($trie)
+}
 
 sub node-to-map(NativeTrieNode:D $node --> Hash) {
     my %node = TRIEVALUE => $node.value;
