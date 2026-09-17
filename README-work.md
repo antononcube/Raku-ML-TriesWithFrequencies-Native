@@ -50,22 +50,6 @@ sub native-trie-say($t) { trie-say(trie-from-map-format(native-trie-to-map($t)))
 
 native-trie-say($tr);
 ```
-```
-# TRIEROOT => 6
-# ├─b => 4
-# │ └─a => 4
-# │   ├─l => 1
-# │   │ └─m => 1
-# │   └─r => 3
-# │     ├─k => 1
-# │     └─s => 1
-# └─c => 2
-#   └─e => 2
-#     ├─l => 1
-#     │ └─l => 1
-#     └─r => 1
-#       └─t => 1
-```
 
 
 Here we convert the trie with frequencies above into a trie with probabilities:
@@ -74,22 +58,6 @@ Here we convert the trie with frequencies above into a trie with probabilities:
 my $ptr = native-trie-node-probabilities( $tr );
 native-trie-say($ptr);
 ```
-```
-# TRIEROOT => 1
-# ├─b => 0.6666666666666666
-# │ └─a => 1
-# │   ├─l => 0.25
-# │   │ └─m => 1
-# │   └─r => 0.75
-# │     ├─k => 0.3333333333333333
-# │     └─s => 0.3333333333333333
-# └─c => 0.3333333333333333
-#   └─e => 1
-#     ├─l => 0.5
-#     │ └─l => 1
-#     └─r => 0.5
-#       └─t => 1
-```
 
 
 Here we shrink the trie with probabilities above:
@@ -97,28 +65,12 @@ Here we shrink the trie with probabilities above:
 ```raku
 native-trie-say(native-trie-shrink($ptr));
 ```
-```
-# TRIEROOT => 1
-# ├─ba => 0.6666666666666666
-# │ ├─lm => 0.25
-# │ └─r => 0.75
-# │   ├─k => 0.3333333333333333
-# │   └─s => 0.3333333333333333
-# └─ce => 0.3333333333333333
-#   ├─ll => 0.5
-#   └─rt => 0.5
-```
 
 
 Here we retrieve a sub-trie with a key:
 
 ```raku
 native-trie-say(native-trie-retrieve($ptr, 'bar'.comb))
-```
-```
-# TRIEROOT => 0.75
-# ├─k => 0.3333333333333333
-# └─s => 0.3333333333333333
 ```
 
 
@@ -129,33 +81,12 @@ my @randomWords = native-trie-random-choice($ptr, 200):drop-root;
 my $ptrRandom = native-trie-node-probabilities(native-trie-create(@randomWords));
 native-trie-say($ptrRandom);
 ```
-```
-#ERROR: Undeclared routine:
-#ERROR:     native-trie-random-choice used at line 2. Did you mean 'native-trie-node-counts', 'trie-random-choice'?
-# Nil
-```
 
 
 Compare with the original one:
 
 ```raku
 native-trie-say($ptr)
-```
-```
-# TRIEROOT => 1
-# ├─b => 0.6666666666666666
-# │ └─a => 1
-# │   ├─l => 0.25
-# │   │ └─m => 1
-# │   └─r => 0.75
-# │     ├─k => 0.3333333333333333
-# │     └─s => 0.3333333333333333
-# └─c => 0.3333333333333333
-#   └─e => 1
-#     ├─l => 0.5
-#     │ └─l => 1
-#     └─r => 0.5
-#       └─t => 1
 ```
 
 
@@ -171,9 +102,6 @@ Such trees can be nicely represented as hashmaps. For example:
 ```raku
 my $tr = native-trie-shrink(native-trie-create-by-split(<core cort>));
 native-trie-to-map-format($tr);
-```
-```
-# {TRIEROOT => {TRIEVALUE => 2, cor => {TRIEVALUE => 2, e => {TRIEVALUE => 1}, t => {TRIEVALUE => 1}}}}
 ```
 
 
