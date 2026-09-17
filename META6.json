@@ -1,0 +1,39 @@
+{
+    "name": "ML::TriesWithFrequencies::Native",
+    "description": "Package with functions for creation and manipulation of tries (prefix trees) with frequencies.",
+    "version": "0.0.1",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "depends": [
+        "NativeHelpers::Array"
+    ],
+    "build-depends": [
+        "LibraryMake",
+        "Distribution::Builder::MakeFromJSON",
+        "ML::TriesWithFrequencies::Native::CustomBuilder"
+    ],
+    "test-depends": [],
+    "provides": {
+        "ML::TriesWithFrequencies::Native": "lib/ML/TriesWithFrequencies/Native.rakumod",
+        "ML::TriesWithFrequencies::Native::CustomerBuilder": "lib/ML/TriesWithFrequencies/Native/CustomerBuilder.rakumod"
+    },
+    "resources": [
+        "libraries/TriesWithFrequencies"
+    ],
+    "license": "Artistic-2.0",
+    "tags": [
+        "data mining",
+        "prefix tree",
+        "prefix trees",
+        "sequence mining",
+        "trie",
+        "tries",
+        "tries with frequencies",
+        "native"
+    ],
+    "api": "0",
+    "source-url": "https://github.com/antononcube/Raku-ML-TriesWithFrequencies-Native.git",
+    "builder": "ML::TriesWithFrequencies::Native::CustomBuilder"
+}

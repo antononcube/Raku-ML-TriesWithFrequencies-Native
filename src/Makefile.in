@@ -1,0 +1,12 @@
+name = %TriesWithFrequencies%
+
+all: %DESTDIR%/resources/libraries/%TriesWithFrequencies%
+clean:
+	rm %DESTDIR%/resources/libraries/%TriesWithFrequencies%
+
+%DESTDIR%/resources/libraries/%TriesWithFrequencies%: TriesWithFrequencies.c
+ifeq ($(shell uname), Darwin)
+	%CC% -shared %CCSHARED% %CCFLAGS% TriesWithFrequencies.c -o %DESTDIR%/resources/libraries/%TriesWithFrequencies% -framework Accelerate
+else
+	%CC% -shared %CCSHARED% %CCFLAGS% TriesWithFrequencies.c -o %DESTDIR%/resources/libraries/%TriesWithFrequencies%
+endif
