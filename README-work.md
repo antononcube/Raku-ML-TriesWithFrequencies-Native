@@ -82,7 +82,7 @@ native-trie-say(native-trie-retrieve($ptr, 'bar'.comb))
 Generate random words using trie, make a new trie, and visualize it:
 
 ```raku
-my @randomWords = native-trie-random-choice($ptr, 200):drop-root;
+my @randomWords = native-trie-random-choice($ptr, 200);
 my $ptrRandom = native-trie-node-probabilities(native-trie-create(@randomWords));
 native-trie-say($ptrRandom);
 ```

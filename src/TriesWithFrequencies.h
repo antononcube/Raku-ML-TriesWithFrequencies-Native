@@ -61,6 +61,7 @@ void twf_node_counts(const TWFNode *trie, size_t *total, size_t *internal,
 int twf_random_choice(const TWFNode *trie, bool weighted, unsigned int *seed,
                       const char ***tokens, size_t *length);
 void twf_free_choice(const char **tokens);
+const char *twf_choice_token(const char *const *tokens, size_t index);
 
 /* JSON is allocated with malloc; caller frees it.  max_level < 0 means all. */
 char *twf_to_json(const TWFNode *trie, int max_level);

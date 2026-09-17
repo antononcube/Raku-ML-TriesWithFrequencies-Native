@@ -513,6 +513,7 @@ int twf_random_choice(const TWFNode *n, bool weighted, unsigned int *seed,
 }
 
 void twf_free_choice(const char **tokens) { free((void *)tokens); }
+const char *twf_choice_token(const char *const *tokens, size_t index) { return tokens ? tokens[index] : NULL; }
 
 typedef struct {
   char *s;

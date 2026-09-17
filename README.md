@@ -130,14 +130,25 @@ native-trie-say(native-trie-retrieve($ptr, 'bar'.comb))
 Generate random words using trie, make a new trie, and visualize it:
 
 ```raku
-my @randomWords = native-trie-random-choice($ptr, 200):drop-root;
+my @randomWords = native-trie-random-choice($ptr, 200);
 my $ptrRandom = native-trie-node-probabilities(native-trie-create(@randomWords));
 native-trie-say($ptrRandom);
 ```
 ```
-#ERROR: Undeclared routine:
-#ERROR:     native-trie-random-choice used at line 2. Did you mean 'native-trie-node-counts', 'trie-random-choice'?
-# Nil
+# TRIEROOT => 1
+# ├─b => 0.62
+# │ └─a => 1
+# │   ├─l => 0.25806451612903225
+# │   │ └─m => 1
+# │   └─r => 0.7419354838709677
+# │     ├─k => 0.4673913043478261
+# │     └─s => 0.532608695652174
+# └─c => 0.38
+#   └─e => 1
+#     ├─l => 0.5
+#     │ └─l => 1
+#     └─r => 0.5
+#       └─t => 1
 ```
 
 

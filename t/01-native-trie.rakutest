@@ -22,6 +22,7 @@ is-deeply native-trie-counts($trie), { total => 14, internal => 9, leaves => 5 }
 my @choices = native-trie-random-choice($trie, 3, :seed(42));
 is @choices.elems, 3, 'returns the requested number of random paths';
 ok @choices.all ~~ Positional, 'each random choice is a token list';
+ok @choices.map({ .join }).all (elem) <bar bark bars balm cert cell>, 'random choices retain valid token values after native memory is freed';
 native-trie-free($shrunk);
 native-trie-free($probabilities);
 native-trie-free($trie);
