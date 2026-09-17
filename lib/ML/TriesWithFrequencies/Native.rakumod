@@ -42,33 +42,66 @@ sub word-array(Positional:D $word --> CArray[Str]) {
     $result[$word.elems] = Str;
     $result
 }
+
+#| New native trie object.
 sub native-trie-new(Str() $key = '', Real() $value = 0 --> NativeTrieNode) is export { c-new($key, $value.Num) }
+
+#| Free the memory of native trie object.
 sub native-trie-free(NativeTrieNode:D $trie) is export { c-free($trie) }
+
+#| Clone a trie.
 sub native-trie-clone(NativeTrieNode:D $trie --> NativeTrieNode) is export { c-clone($trie) }
+
+#| Check whether two tries are equal.
 sub native-trie-equal(NativeTrieNode:D $a, NativeTrieNode:D $b --> Bool) is export { so c-equal($a, $b) }
-sub native-trie-create(@words --> NativeTrieNode) is export {
+
+#| Create a trie with word-lists.
+sub native-trie-create(@words, :$method is copy = Whatever --> NativeTrieNode) is export {
+
     die 'Every word must be Positional.' unless @words.all ~~ Positional;
-    my $token-pointers = CArray[Pointer].new;
-    my $lengths = CArray[size_t].new;
-    my @token-arrays;
-    for @words.kv -> $i, $word {
-        my $tokens = word-array($word);
-        @token-arrays.push: $tokens;
-        $token-pointers[$i] = nativecast(Pointer, $tokens);
-        $lengths[$i] = $word.elems;
+
+    die 'The value of method is expected to be Whatever or one of "insertion" or "delegation".'
+    unless $method.isa(Whatever) || $method.isa(WhateverCode) || $method ~~ Str:D && $method ∈ <insert by-insert insertion delegate delegation>;
+
+    if $method.isa(Whatever) || $method.isa(WhateverCode) || $method ∈ <insert by-insert insertion> {
+        my $trie = native-trie-new();
+        die 'Every word must be Positional.' unless @words.all ~~ Positional;
+        for @words -> $word {
+            next unless $word.elems;
+            die 'Could not insert word.' unless native-trie-insert($trie, $word);
+        }
+        return $trie
+    } else {
+        my $token-pointers = CArray[Pointer].new;
+        my $lengths = CArray[size_t].new;
+        my @token-arrays;
+        for @words.kv -> $i, $word {
+            my $tokens = word-array($word);
+            @token-arrays.push: $tokens;
+            $token-pointers[$i] = nativecast(Pointer, $tokens);
+            $lengths[$i] = $word.elems;
+        }
+        return c-create($token-pointers, $lengths, @words.elems)
     }
-    c-create($token-pointers, $lengths, @words.elems)
 }
+
+#| Create a trie with words.
 sub native-trie-create-by-split(@words, Str() :$separator = '' --> NativeTrieNode) is export {
     my @tokenized = @words.map({ $separator.chars ?? .split($separator).Array !! .comb.Array });
     native-trie-create(@tokenized)
 }
+
+#| Insert a word-list into a trie.
 sub native-trie-insert(NativeTrieNode:D $trie, Positional:D $word, Real() :$value = 1, Real() :$bottom-value = $value --> Bool) is export {
     return False unless $word.elems;
     my $array = word-array($word);
     so c-insert($trie, $array, $word.elems, $value.Num, $bottom-value.Num)
 }
+
+#| Merge two tries.
 sub native-trie-merge(NativeTrieNode:D $a, NativeTrieNode:D $b --> NativeTrieNode) is export { c-merge($a, $b) }
+
+#| Retrieve a subtrie with a word-list.
 sub native-trie-retrieve(NativeTrieNode:D $trie, Positional:D $word --> NativeTrieNode) is export { my $a = word-array($word); c-retrieve($trie, $a, $word.elems) }
 sub native-trie-position(NativeTrieNode:D $trie, Positional:D $word --> Int) is export { my $a = word-array($word); c-position($trie, $a, $word.elems).Int }
 sub native-trie-is-key(NativeTrieNode:D $trie, Positional:D $word --> Bool) is export { $word.elems && so c-is-key($trie, word-array($word), $word.elems) }
@@ -80,15 +113,19 @@ sub native-trie-shrink(NativeTrieNode:D $trie, Str() :$delimiter = '', Real() :$
 sub native-trie-remove-by-threshold(NativeTrieNode:D $trie, Real() $threshold, Bool :$keep-at-or-above = True, Str :$replacement-key = Str --> NativeTrieNode) is export { c-threshold($trie, $threshold.Num, $keep-at-or-above.Int, $replacement-key) }
 sub native-trie-remove-by-pareto-fraction(NativeTrieNode:D $trie, Real() $fraction, Bool :$keep-top = True, Str :$replacement-key = Str --> NativeTrieNode) is export { c-pareto($trie, $fraction.Num, $keep-top.Int, $replacement-key) }
 
+#| Native trie statistics.
 sub native-trie-counts(NativeTrieNode:D $trie --> Hash) is export {
     my size_t ($total, $internal, $leaves) = 0, 0, 0;
     c-node-counts($trie, $total, $internal, $leaves);
     { total => $total.Int, internal => $internal.Int, leaves => $leaves.Int }
 }
+
+#| Native trie statistics.
 sub native-trie-node-counts(NativeTrieNode:D $trie --> Hash) is export {
     native-trie-counts($trie)
 }
 
+#| Generate random words based on a native trie.
 sub native-trie-random-choice(NativeTrieNode:D $trie, Int() $count = 1,
                               Bool :$weighted = True, Int :$seed --> List) is export {
     die 'Count must be non-negative.' if $count < 0;
@@ -118,7 +155,9 @@ sub node-to-map(NativeTrieNode:D $node --> Hash) {
     }
     %node
 }
-# This map is accepted by trie-from-map-format(native-trie-to-map($trie)).
+
+#| Represent a native trie to map format.
 sub native-trie-to-map(NativeTrieNode:D $trie --> Hash) is export { { TRIEROOT => node-to-map($trie) } }
-# Compatibility alias used by early package documentation.
+
+#| Represent a native trie to map format.
 sub native-trie-to-map-format(NativeTrieNode:D $trie --> Hash) is export { native-trie-to-map($trie) }
