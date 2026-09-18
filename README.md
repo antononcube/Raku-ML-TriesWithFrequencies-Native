@@ -208,6 +208,30 @@ See the benchmark file ["Native-Trie-creation-profiling.raku"](./examples/Native
 
 ------
 
+## Implementation
+
+The following steps were taken to implement and document this package ("ML::TriesWithFrequencies::Native").
+All Large Language Model (LLM) steps were with OpenAI's "GPT-5.6-Terra". 
+ 
+- Reprogram the Java-implementation, [AAp5], to C, [AAp2], using an LLM.
+- Making a skeleton package version of "ML::TriesWithFrequencies::Native".
+  - Using "Math::DistanceFunctions::Native" as a reference.
+- Taking the README of "ML::TriesWithFrequencies", [AAp1], and changing it to reflect the desired native-trie functionalities.
+- Add the function `trie-from-map-format` in "ML::TriesWithFrequencies" order to transfer native tries into Raku tries.
+  - See the sub `native-trie-say` defined above.
+- Implement the method `eq` for the class `ML::TriesWithFrequencies::Trie` of "ML::TriesWithFrequencies".
+- First implementation with an LLM using the first prompt in ["prompts.md"](./docs/prompts.md).
+- Subsequent LLM-supported implementation changes based on observed behavior.
+  - See the rest of the prompts in ["prompts.md"](./docs/prompts.md).
+- Profiling and making `native-trie-create` take a method option .
+
+Reading and understanding the Raku code of "ML::TriesWithFrequencies::Native" is pretty straightforward. 
+
+I read the C code to a point -- one of the reasons to make this package is to be able to extensively test that C code.
+(Say, by visual- or programmatic comparisons.)
+
+------
+
 ## References
 
 ### Articles
